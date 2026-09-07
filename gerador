@@ -1,0 +1,64 @@
+import random
+
+def genKey():
+    symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+               'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U',
+               'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4',
+               '5', '6', '7', '8', '9']
+    x = 0
+    newKey = ""
+    while x < 17:
+        digit = random.randint(0, 34)
+        if x == 5 or x == 11:
+            newKey += '-'
+        else:
+            newKey += symbols[digit]
+        x += 1
+    return newKey
+
+def genUniqueKeyToFile():
+    key = genKey()
+
+    f = open("keys.txt", "a+")
+
+    while True:
+        f.seek(0)  # Move the file pointer to the beginning of the file
+        lines = f.readlines()
+        if key + '\n' in lines:  # Check if key already exists in the file
+            key = genKey()
+        else:
+            print("Sua key exclusiva: " + key)
+            f.write(key + '\n')
+            break
+
+    f.close()
+
+def generate_multiple_keys(num_keys):
+    for _ in range(num_keys):
+        genUniqueKeyToFile()
+
+affirmatives = ["y", "Y", "yes", "Yes", "yeah", "Yeah", "yup", "Yup"]
+negatives = ["n", "N", "no", "No", "nope", "Nope", "nah", "Nah"]
+
+while True:
+    try:
+        num_keys = int(input("Quantas chaves você deseja gerar? "))
+        generate_multiple_keys(num_keys)
+    except ValueError:
+        print("Por favor, insira um número válido.")
+        continue
+
+    while True:
+        again = input("Gerar mais chaves? (y/n): ")
+        if again in affirmatives:
+            try:
+                num_keys = int(input("Quantas chaves você deseja gerar? "))
+                generate_multiple_keys(num_keys)
+            except ValueError:
+                print("Por favor, insira um número válido.")
+                continue
+        elif again in negatives:
+            print("Compreensível, tenha um bom dia.")
+            break
+        else:
+            print("Não entendi a resposta!")
